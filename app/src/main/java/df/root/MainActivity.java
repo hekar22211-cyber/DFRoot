@@ -1,48 +1,40 @@
 package df.root;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean isJoined = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // সঠিক লেআউট ফাইল সেট করা হলো
         setContentView(R.layout.activity_main);
 
-        Button btnJoin = findViewById(R.id.btnJoinTelegram);
-        
-        if (btnJoin != null) {
-            btnJoin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isJoined = true;
-                    // আপনার টেলিগ্রাম চ্যানেল লিংক
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/Gaming_Rahim_YT"));
-                    startActivity(intent);
-                }
-            });
-        }
+        // অ্যাপ ওপেন হওয়ার সাথে সাথেই টেলিগ্রাম পপআপ দেখানোর জন্য
+        showTelegramPopup();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // ব্যবহারকারী টেলিগ্রাম থেকে ব্যাক করে অ্যাপে আসলে চেক করবে
-        if (isJoined) {
-            Log.d("GamingRahimYT", "User returned from Telegram");
-            Toast.makeText(this, "ধন্যবাদ! এখন অ্যাপ ব্যবহার করতে পারেন।", Toast.LENGTH_LONG).show();
-            
-            // এখানে চাইলে লক স্ক্রিন বা ভিউ হাইড করে মূল ফিচার এনেবল করতে পারেন
-        }
+    private void showTelegramPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Gaming Rahim YT");
+        builder.setMessage("অ্যাপটি ব্যবহার করতে প্রথমে আমাদের টেলিগ্রাম চ্যানেলে জয়েন করুন!");
+        builder.setCancelable(false); // বাইরে ক্লিক করে পপআপ কাটতে পারবে না
+
+        builder.setPositiveButton("টেলিগ্রাম জয়েন করুন", (dialog, which) -> {
+            // আপনার টেলিগ্রাম চ্যানেলের লিংক
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/Gaming_Rahim_YT"));
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("বাতিল", (dialog, which) -> {
+            dialog.dismiss();
+            // চাইলে বাতিল করলে অ্যাপ বন্ধ করে দিতে পারেন:
+            // finish();
+        });
+
+        builder.show();
     }
 }
